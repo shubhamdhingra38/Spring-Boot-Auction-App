@@ -8,6 +8,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Arrays;
 import java.util.Collection;
 
+/**
+ * Custom UserDetails
+ */
 public class CustomUserPrincipal implements UserDetails {
     private User user;
 
@@ -31,6 +34,7 @@ public class CustomUserPrincipal implements UserDetails {
         return user.getUsername();
     }
 
+    // Just returning true from here, will figure this out later
     @Override
     public boolean isAccountNonExpired() {
         return true;

@@ -7,6 +7,12 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+/**
+ * Custom user model, save user to database
+ * Spring doesn't persist the user in any database by default, it is all in memory
+ * We need a Custom `UserDetails` and a custom `UserDetailsService`
+ * NOTE: Adding the @Service annotation here is how Spring figures it out
+ */
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
     @Autowired

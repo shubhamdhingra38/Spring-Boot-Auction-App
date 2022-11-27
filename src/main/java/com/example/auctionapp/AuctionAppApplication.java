@@ -9,9 +9,14 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.web.SecurityFilterChain;
 
 @SpringBootApplication
-public class AuctionAppApplication {
+@EnableWebSecurity
+public class AuctionAppApplication{
     private static final Logger log = LoggerFactory.getLogger(AuctionAppApplication.class);
 
     public static void main(String[] args) {
@@ -30,6 +35,22 @@ public class AuctionAppApplication {
 //            log.info(c.toString());
 //        };
 //    }
+
+    /**
+     * This works but weird syntax though?
+     */
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.csrf().disable().httpBasic().and()
+                .authorizeHttpRequests((requests) -> requests
+                        .antMatchers("/", "/home").permitAll()
+                        .anyRequest().authenticated()
+                )
+                .logout((logout) -> logout.permitAll());
+
+        return http.build();
+    }
+
 
     @Bean
     public CommandLineRunner demoQuery(ItemRepository repository) {
