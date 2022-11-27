@@ -1,9 +1,13 @@
 package com.example.auctionapp.domain;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 
+
+@JsonView(Views.Public.class)
 @Entity
 public class Auction {
     @Id
@@ -26,6 +30,7 @@ public class Auction {
     private Date closingTime = new Date();
 
     // TODO: Can't get nullable=false to work in the database schema
+    @JsonView(Views.Internal.class)
     @ManyToOne(optional = false, targetEntity = User.class)
     private User createdBy;
 

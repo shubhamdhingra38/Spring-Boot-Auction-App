@@ -27,18 +27,18 @@ public class AuctionAppApplication{
         SpringApplication.run(AuctionAppApplication.class, args);
     }
 
-    @Bean
-    public CommandLineRunner createAuction(AuctionRepository auctionRepository, UserRepository userRepository) {
-        return (args) -> {
-            User user = userRepository.findByUsername("test");
-            Auction auction = new Auction("New Laptop", "A great laptop for sale");
-            auction.setCreatedBy(user);
-            auctionRepository.save(auction);
-        };
-    }
+//    @Bean
+//    public CommandLineRunner createAuction(AuctionRepository auctionRepository, UserRepository userRepository) {
+//        return (args) -> {
+//            User user = userRepository.findByUsername("test");
+//            Auction auction = new Auction("Some furniture", "Vintage furniture for sale");
+//            auction.setCreatedBy(user);
+//            auctionRepository.save(auction);
+//        };
+//    }
 
 //    @Bean
-//    public CommandLineRunner demo(ItemRepository repository) {
+//    public CommandLineRunner createItem(ItemRepository repository) {
 //        return (args) -> {
 //            Category c = new Category("Electronics");
 //
