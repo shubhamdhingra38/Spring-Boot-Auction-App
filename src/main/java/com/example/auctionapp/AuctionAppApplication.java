@@ -1,8 +1,12 @@
 package com.example.auctionapp;
 
+import com.example.auctionapp.domain.Auction;
 import com.example.auctionapp.domain.Category;
 import com.example.auctionapp.domain.Item;
+import com.example.auctionapp.domain.User;
+import com.example.auctionapp.infra.AuctionRepository;
 import com.example.auctionapp.infra.ItemRepository;
+import com.example.auctionapp.infra.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -21,6 +25,16 @@ public class AuctionAppApplication{
 
     public static void main(String[] args) {
         SpringApplication.run(AuctionAppApplication.class, args);
+    }
+
+    @Bean
+    public CommandLineRunner createAuction(AuctionRepository auctionRepository, UserRepository userRepository) {
+        return (args) -> {
+            User user = userRepository.findByUsername("test");
+            Auction auction = new Auction("New Laptop", "A great laptop for sale");
+            auction.setCreatedBy(user);
+            auctionRepository.save(auction);
+        };
     }
 
 //    @Bean

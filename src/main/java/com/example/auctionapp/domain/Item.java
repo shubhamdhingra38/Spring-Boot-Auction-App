@@ -10,6 +10,21 @@ public class Item {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @Column(nullable = false)
+    private String name;
+
+    private String description;
+
+    private double startingPrice;
+
+    // many items can belong to one auction
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, targetEntity = Auction.class)
+    private Auction auction;
+
+
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Category category;
+
     protected Item() {
     }
 
@@ -20,11 +35,7 @@ public class Item {
 
     @Override
     public String toString() {
-        return "Item{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", category=" + category +
-                '}';
+        return "Item{" + "id=" + id + ", name='" + name + '\'' + ", category=" + category + '}';
     }
 
     public Long getId() {
@@ -39,8 +50,4 @@ public class Item {
         return category;
     }
 
-    private String name;
-
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private Category category;
 }
