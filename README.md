@@ -7,3 +7,4 @@
 * More Models
 * More Controllers
 * Change @JsonView to use DTOs instead
+* Has password
