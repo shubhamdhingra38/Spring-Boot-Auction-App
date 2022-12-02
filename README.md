@@ -6,3 +6,4 @@
 * Auth only /api/v1 endpoint (just to test)
 * More Models
 * More Controllers
+* Change @JsonView to use DTOs instead

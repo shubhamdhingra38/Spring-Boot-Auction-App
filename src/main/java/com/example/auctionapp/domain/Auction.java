@@ -3,6 +3,7 @@ package com.example.auctionapp.domain;
 import com.fasterxml.jackson.annotation.JsonView;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -27,7 +28,7 @@ public class Auction {
     private List<Item> items;
 
     @Column
-    private Date closingTime = new Date();
+    private LocalDate closingTime = LocalDate.now().plusDays(7);
 
     // TODO: Can't get nullable=false to work in the database schema
     @JsonView(Views.Internal.class)
@@ -75,11 +76,11 @@ public class Auction {
         this.items = items;
     }
 
-    public Date getClosingTime() {
+    public LocalDate getClosingTime() {
         return closingTime;
     }
 
-    public void setClosingTime(Date closingTime) {
+    public void setClosingTime(LocalDate closingTime) {
         this.closingTime = closingTime;
     }
 
