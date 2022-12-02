@@ -2,16 +2,22 @@ package com.example.auctionapp.restinterface;
 
 
 import com.example.auctionapp.domain.Item;
+import com.example.auctionapp.domain.ItemDTO;
 import com.example.auctionapp.domain.User;
+import com.example.auctionapp.exceptions.CategoryNotFoundException;
 import com.example.auctionapp.infra.ItemRepository;
+import com.example.auctionapp.infra.ItemService;
+import com.example.auctionapp.infra.UserRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.security.Principal;
 import java.util.List;
 
 /**
@@ -24,12 +30,43 @@ public class ItemController {
     @Autowired
     private ItemRepository itemRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private ItemService itemService;
+
+    @Autowired
+    private ModelMapper modelMapper;
+
     @GetMapping("/items")
-    List<Item> helloWorld() {
-//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-//        System.out.println(auth.getPrincipal());
-//        User user = (User)auth.getPrincipal();
-//        System.out.println(user);
-        return itemRepository.findByName("Laptop");
+    List<ItemDTO> listItems() {
+        List<Item> items = itemRepository.findAll();
+        return items.stream().map(item -> convertToDto(item)).toList();
+    }
+
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping("/items")
+    ItemDTO createAnItem(@RequestBody ItemDTO itemDTO, Principal principal) {
+        User user = userRepository.findByUsername(principal.getName());
+        Item requestItem = convertToEntity(itemDTO);
+        try {
+            Item responseItem = null;
+            responseItem = itemService.saveNewItem(requestItem, user, itemDTO.getAuctionId(), itemDTO.getCategoryId());
+            return convertToDto(responseItem);
+        } catch (CategoryNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Category does not exist");
+        }
+    }
+
+    private Item convertToEntity(ItemDTO itemDTO) {
+        Item item = modelMapper.map(itemDTO, Item.class);
+        item.setId(null);
+        return item;
+    }
+
+    private ItemDTO convertToDto(Item item) {
+        ItemDTO itemDTO = modelMapper.map(item, ItemDTO.class);
+        return itemDTO;
     }
 }

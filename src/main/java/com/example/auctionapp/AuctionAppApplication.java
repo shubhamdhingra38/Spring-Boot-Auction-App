@@ -7,6 +7,7 @@ import com.example.auctionapp.domain.User;
 import com.example.auctionapp.infra.AuctionRepository;
 import com.example.auctionapp.infra.ItemRepository;
 import com.example.auctionapp.infra.UserRepository;
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -73,5 +74,10 @@ public class AuctionAppApplication{
             log.info("Queried...");
             log.info(e.toString());
         };
+    }
+
+    @Bean
+    public ModelMapper modelMapper() {
+        return new ModelMapper();
     }
 }
