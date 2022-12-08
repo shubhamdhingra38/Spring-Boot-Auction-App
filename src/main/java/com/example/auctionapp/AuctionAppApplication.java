@@ -1,8 +1,11 @@
 package com.example.auctionapp;
 
+import com.example.auctionapp.domain.User;
+import com.example.auctionapp.infra.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -57,6 +60,13 @@ public class AuctionAppApplication {
         return http.build();
     }
 
+//    @Bean
+//    public CommandLineRunner createAdmin(UserRepository userRepository) {
+//        return (args) -> {
+//            User user = new User("admin", "password");
+//            userRepository.save(user);
+//        };
+//    }
 
 //    @Bean
 //    public CommandLineRunner demoQuery(ItemRepository repository) {

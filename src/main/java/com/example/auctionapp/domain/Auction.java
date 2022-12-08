@@ -1,14 +1,21 @@
 package com.example.auctionapp.domain;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 
+@Setter
+@Getter
 @JsonView(Views.Public.class)
+@NoArgsConstructor
 @Entity
 public class Auction {
     @Id
@@ -25,7 +32,7 @@ public class Auction {
     // one auction can have many items
     // TODO: Why does spring create an intermediate join table?
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Item> items;
+    private List<Item> items = new ArrayList<>();
 
     @Column
     private LocalDate closingTime = LocalDate.now().plusDays(7);
@@ -40,55 +47,11 @@ public class Auction {
         this.description = description;
     }
 
-    public Auction() {
-
+    public void removeItem(Item item) {
+        items.remove(item);
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public List<Item> getItems() {
-        return items;
-    }
-
-    public void setItems(List<Item> items) {
-        this.items = items;
-    }
-
-    public LocalDate getClosingTime() {
-        return closingTime;
-    }
-
-    public void setClosingTime(LocalDate closingTime) {
-        this.closingTime = closingTime;
-    }
-
-    public User getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(User createdBy) {
-        this.createdBy = createdBy;
+    public void addItem(Item item) {
+        items.add(item);
     }
 }

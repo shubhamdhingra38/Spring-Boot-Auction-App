@@ -4,6 +4,8 @@ package com.example.auctionapp.restinterface;
 import com.example.auctionapp.domain.Item;
 import com.example.auctionapp.domain.ItemDTO;
 import com.example.auctionapp.domain.User;
+import com.example.auctionapp.exceptions.AuctionDoesNotBelongToUserException;
+import com.example.auctionapp.exceptions.AuctionNotFoundException;
 import com.example.auctionapp.exceptions.CategoryNotFoundException;
 import com.example.auctionapp.infra.ItemRepository;
 import com.example.auctionapp.infra.ItemService;
@@ -11,9 +13,6 @@ import com.example.auctionapp.infra.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -51,11 +50,14 @@ public class ItemController {
         User user = userRepository.findByUsername(principal.getName());
         Item requestItem = convertToEntity(itemDTO);
         try {
-            Item responseItem = null;
-            responseItem = itemService.saveNewItem(requestItem, user, itemDTO.getAuctionId(), itemDTO.getCategoryId());
+            final Item responseItem = itemService.saveNewItem(requestItem, user, itemDTO.getAuctionId(), itemDTO.getCategoryId());
             return convertToDto(responseItem);
         } catch (CategoryNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Category does not exist");
+        } catch (AuctionDoesNotBelongToUserException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Auction does not belong to user");
+        } catch (AuctionNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Auction does not exist");
         }
     }
 
