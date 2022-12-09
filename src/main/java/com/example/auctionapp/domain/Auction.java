@@ -4,18 +4,17 @@ import com.fasterxml.jackson.annotation.JsonView;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.time.LocalDateTime;
 
 
 @Setter
 @Getter
 @JsonView(Views.Public.class)
 @NoArgsConstructor
+@ToString
 @Entity
 public class Auction {
     @Id
@@ -29,13 +28,12 @@ public class Auction {
     @Column(nullable = false)
     private String description;
 
-    // one auction can have many items
-    // TODO: Why does spring create an intermediate join table?
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Item> items = new ArrayList<>();
+    @OneToOne(mappedBy = "auction", cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
+    private Item item;
 
-    @Column
-    private LocalDate closingTime = LocalDate.now().plusDays(7);
+    @Column(nullable = false)
+    private LocalDateTime closingTime;
 
     // TODO: Can't get nullable=false to work in the database schema
     @JsonView(Views.Internal.class)
@@ -47,11 +45,11 @@ public class Auction {
         this.description = description;
     }
 
-    public void removeItem(Item item) {
-        items.remove(item);
+    @PrePersist
+    public void prePersist() {
+        if(closingTime == null) {
+            closingTime = LocalDateTime.now().plusDays(7);
+        }
     }
 
-    public void addItem(Item item) {
-        items.add(item);
-    }
 }

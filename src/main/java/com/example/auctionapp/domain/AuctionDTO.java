@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -14,7 +15,7 @@ public class AuctionDTO {
     long id;
     String name;
     String description;
-    List<ItemDTO> items;
-    LocalDate closingTime;
+    ItemDTO item;
+    LocalDateTime closingTime;
     long createdById;
 }

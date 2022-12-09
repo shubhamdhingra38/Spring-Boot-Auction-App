@@ -13,6 +13,6 @@ public class ItemDTO {
     String name;
     String description;
     double startingPrice;
-    long categoryId;
+    CategoryDTO category;
     long auctionId;
 }

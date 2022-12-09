@@ -4,6 +4,7 @@ import com.example.auctionapp.domain.*;
 import com.example.auctionapp.exceptions.AuctionDoesNotBelongToUserException;
 import com.example.auctionapp.exceptions.AuctionNotFoundException;
 import com.example.auctionapp.exceptions.CategoryNotFoundException;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,35 +18,42 @@ public class ItemService {
 
 
     @Autowired
-    ItemRepository itemRepository;
+    private ItemRepository itemRepository;
 
     @Autowired
-    AuctionRepository auctionRepository;
+    private AuctionRepository auctionRepository;
 
     @Autowired
-    CategoryRepository categoryRepository;
+    private CategoryRepository categoryRepository;
 
-    @Transactional
-    public Item saveNewItem(Item item, User user, long auctionId, long categoryId) throws CategoryNotFoundException, AuctionNotFoundException, AuctionDoesNotBelongToUserException {
-        Optional<Auction> auction = auctionRepository.findById(auctionId);
-        Optional<Category> category = categoryRepository.findById(categoryId);
+    @Autowired
+    private ModelMapper modelMapper;
+
+    public Item saveNewItem(ItemDTO itemDto) throws CategoryNotFoundException {
+        System.out.println("Saving item:" + itemDto);
+        Item item = convertToEntity(itemDto);
+        item.setAuction(null);
+        System.out.println("Item: " + item);
+
+        Optional<Category> category = categoryRepository.findById(itemDto.getCategory().getId());
 
         if (!category.isPresent()) {
             throw new CategoryNotFoundException();
         }
 
-        if (!auction.isPresent()) {
-            throw new AuctionNotFoundException();
-        }
-
-        if (auction.get().getCreatedBy().getId() !=  user.getId()) {
-            throw new AuctionDoesNotBelongToUserException();
-        }
-
-        auction.get().addItem(item);
-        item.setAuction(auction.get());
         item.setCategory(category.get());
         itemRepository.save(item);
         return item;
+    }
+
+    private Item convertToEntity(ItemDTO itemDTO) {
+        Item item = modelMapper.map(itemDTO, Item.class);
+        item.setId(null);
+        return item;
+    }
+
+    private ItemDTO convertToDto(Item item) {
+        ItemDTO itemDTO = modelMapper.map(item, ItemDTO.class);
+        return itemDTO;
     }
 }

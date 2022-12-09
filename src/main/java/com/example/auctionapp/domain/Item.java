@@ -2,6 +2,7 @@ package com.example.auctionapp.domain;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
@@ -9,6 +10,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @Entity
+@ToString
 public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -23,8 +25,9 @@ public class Item {
     private double startingPrice;
 
 
-    // many items can belong to one auction
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, targetEntity = Auction.class)
+    @OneToOne(cascade = CascadeType.ALL)
+    @MapsId
+    @JoinColumn(name = "auction_id")
     private Auction auction;
 
 
@@ -38,10 +41,4 @@ public class Item {
         this.name = name;
         this.category = category;
     }
-
-    @Override
-    public String toString() {
-        return "Item{" + "id=" + id + ", name='" + name + '\'' + ", category=" + category + '}';
-    }
-
 }

@@ -4,13 +4,16 @@ import com.example.auctionapp.domain.Auction;
 import com.example.auctionapp.domain.AuctionDTO;
 import com.example.auctionapp.domain.User;
 import com.example.auctionapp.domain.Views;
+import com.example.auctionapp.exceptions.CategoryNotFoundException;
 import com.example.auctionapp.infra.AuctionRepository;
 import com.example.auctionapp.infra.AuctionService;
 import com.example.auctionapp.infra.UserRepository;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.security.Principal;
 import java.util.List;
@@ -40,13 +43,14 @@ public class AuctionController {
         return auctions.stream().map(auction -> convertToDto(auction)).toList();
     }
 
-    @JsonView(Views.Public.class)
     @PostMapping("/auctions")
-    Auction createAnAuction(@RequestBody Auction auction, Principal principal) {
+    AuctionDTO createAnAuction(@RequestBody AuctionDTO auctionDTO, Principal principal) {
         User user = userRepository.findByUsername(principal.getName());
-        auction.setCreatedBy(user);
-        auctionRepository.save(auction);
-        return auction;
+        try {
+            return auctionService.save(auctionDTO, user);
+        } catch (CategoryNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Category does not exist");
+        }
     }
 
     private Auction convertToEntity(final AuctionDTO auctionDTO) {
