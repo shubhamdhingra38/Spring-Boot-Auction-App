@@ -1,9 +1,6 @@
 package com.example.auctionapp.restinterface;
 
-import com.example.auctionapp.domain.Auction;
-import com.example.auctionapp.domain.AuctionDTO;
-import com.example.auctionapp.domain.User;
-import com.example.auctionapp.domain.Views;
+import com.example.auctionapp.domain.*;
 import com.example.auctionapp.exceptions.CategoryNotFoundException;
 import com.example.auctionapp.infra.AuctionRepository;
 import com.example.auctionapp.infra.AuctionService;
@@ -11,12 +8,14 @@ import com.example.auctionapp.infra.UserRepository;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Optional;
 
 @RequestMapping("/api/v1")
 @RestController
@@ -33,14 +32,10 @@ public class AuctionController {
     @Autowired
     private ModelMapper modelMapper;
 
-    /**
-     * TODO: Currently controller directly interacting with Data layer
-     *  Add a service layer
-     */
     @GetMapping("/auctions")
-    List<AuctionDTO> getAllAuctions() {
-        List<Auction> auctions = auctionService.findAllAuctions();
-        return auctions.stream().map(auction -> convertToDto(auction)).toList();
+    PaginatedAuctionsDTO getAllAuctions(@RequestParam(required = false, defaultValue = "asc") String createdAtOrder,
+                                        @RequestParam(defaultValue = "0") int pageNumber) {
+        return auctionService.findAllAuctions(pageNumber, createdAtOrder);
     }
 
     @PostMapping("/auctions")

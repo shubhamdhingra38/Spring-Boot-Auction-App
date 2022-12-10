@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 
 @Setter
 @Getter
-@JsonView(Views.Public.class)
 @NoArgsConstructor
 @ToString
 @Entity
@@ -36,9 +35,11 @@ public class Auction {
     private LocalDateTime closingTime;
 
     // TODO: Can't get nullable=false to work in the database schema
-    @JsonView(Views.Internal.class)
     @ManyToOne(optional = false, targetEntity = User.class)
     private User createdBy;
+
+    @Column(nullable = false)
+    private LocalDateTime createdAt;
 
     public Auction(String name, String description) {
         this.name = name;
@@ -49,6 +50,9 @@ public class Auction {
     public void prePersist() {
         if(closingTime == null) {
             closingTime = LocalDateTime.now().plusDays(7);
+        }
+        if(createdAt == null) {
+            createdAt = LocalDateTime.now();
         }
     }
 

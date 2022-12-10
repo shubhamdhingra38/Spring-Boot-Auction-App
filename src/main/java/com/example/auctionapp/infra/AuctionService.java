@@ -6,6 +6,9 @@ import com.example.auctionapp.exceptions.AuctionNotFoundException;
 import com.example.auctionapp.exceptions.CategoryNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -14,6 +17,7 @@ import java.util.Optional;
 
 @Service
 public class AuctionService {
+    private static int PAGE_SIZE = 4;
 
     @Autowired
     private AuctionRepository auctionRepository;
@@ -27,8 +31,20 @@ public class AuctionService {
     private CategoryRepository categoryRepository;
 
 
-    public List<Auction> findAllAuctions() {
-        return auctionRepository.findAll();
+    public PaginatedAuctionsDTO findAllAuctions(int pageNumber, String createdAtOrder) {
+        PageRequest pageRequest;
+        if (createdAtOrder.equals("desc")) {
+            pageRequest = PageRequest.of(pageNumber, PAGE_SIZE, Sort.by("createdAt").descending());
+        } else {
+            pageRequest = PageRequest.of(pageNumber, PAGE_SIZE);
+        }
+        Page<Auction> auctions = auctionRepository.findAll(pageRequest);
+
+        List<AuctionDTO> auctionList = auctions.stream().map(auction -> convertToDto(auction)).toList();
+
+        PaginatedAuctionsDTO paginatedAuctionsDTO = PaginatedAuctionsDTO
+                .builder().auctions(auctionList).numPages(auctions.getTotalPages()).build();
+        return paginatedAuctionsDTO;
     }
 
 
@@ -51,6 +67,10 @@ public class AuctionService {
         Auction savedAuction = auctionRepository.save(auction);
 
         return convertToDto(savedAuction);
+    }
+
+    public List<Auction> findAllAuctionsByClosingTimeDesc() {
+        return auctionRepository.findAllByClosingTimeDesc();
     }
 
     private Auction convertToEntity(final AuctionDTO auctionDTO) {
