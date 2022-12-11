@@ -1,5 +1,6 @@
 package com.example.auctionapp.infra;
 
+import com.example.auctionapp.accessors.S3Accessor;
 import com.example.auctionapp.domain.*;
 import com.example.auctionapp.exceptions.AuctionDoesNotBelongToUserException;
 import com.example.auctionapp.exceptions.AuctionNotFoundException;
@@ -10,8 +11,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,6 +33,13 @@ public class AuctionService {
     @Autowired
     private CategoryRepository categoryRepository;
 
+    @Autowired
+    private S3Accessor s3Accessor;
+
+    public AuctionDTO findAuctionById(long auctionId) throws AuctionNotFoundException {
+        Optional<Auction> auction = auctionRepository.findById(auctionId);
+        return convertToDto(auction.orElseThrow(() -> new AuctionNotFoundException()));
+    }
 
     public PaginatedAuctionsDTO findAllAuctions(int pageNumber, String createdAtOrder) {
         PageRequest pageRequest;
@@ -49,7 +59,7 @@ public class AuctionService {
 
 
     @Transactional
-    public AuctionDTO save(AuctionDTO auctionDTO, User user) throws CategoryNotFoundException {
+    public AuctionDTO save(AuctionDTO auctionDTO, User user, MultipartFile image) throws CategoryNotFoundException, IOException {
         Auction auction = convertToEntity(auctionDTO);
         ItemDTO itemDto = auctionDTO.getItem();
 
@@ -65,6 +75,9 @@ public class AuctionService {
         auction.setCreatedBy(user);
         auction.setItem(item);
         Auction savedAuction = auctionRepository.save(auction);
+
+        // Save image
+        s3Accessor.putS3Object(image, user.getUsername());
 
         return convertToDto(savedAuction);
     }

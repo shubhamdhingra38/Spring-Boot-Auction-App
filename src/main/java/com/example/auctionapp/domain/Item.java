@@ -3,7 +3,6 @@ package com.example.auctionapp.domain;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 

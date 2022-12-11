@@ -1,5 +1,6 @@
 package com.example.auctionapp;
 
+import com.example.auctionapp.config.S3Config;
 import com.example.auctionapp.domain.Auction;
 import com.example.auctionapp.domain.Category;
 import com.example.auctionapp.domain.Item;
@@ -38,6 +39,13 @@ public class AuctionAppApplication {
     public static void main(String[] args) {
         SpringApplication.run(AuctionAppApplication.class, args);
     }
+
+//    @Bean
+//    public CommandLineRunner debugS3Config() {
+//        return (args) -> {
+//            System.out.println("Bucket name is: " + s3Config.getBucketName());
+//        };
+//    }
 
 //    @Bean
 //    public CommandLineRunner createAuction(AuctionRepository auctionRepository, UserRepository userRepository) {

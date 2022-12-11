@@ -1,6 +1,7 @@
 package com.example.auctionapp.restinterface;
 
 import com.example.auctionapp.domain.*;
+import com.example.auctionapp.exceptions.AuctionNotFoundException;
 import com.example.auctionapp.exceptions.CategoryNotFoundException;
 import com.example.auctionapp.infra.AuctionRepository;
 import com.example.auctionapp.infra.AuctionService;
@@ -11,8 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
@@ -38,13 +41,26 @@ public class AuctionController {
         return auctionService.findAllAuctions(pageNumber, createdAtOrder);
     }
 
-    @PostMapping("/auctions")
-    AuctionDTO createAnAuction(@RequestBody AuctionDTO auctionDTO, Principal principal) {
+    @GetMapping("/auction/{auctionId}")
+    AuctionDTO getAuctionById(@PathVariable long auctionId) {
+        try {
+            return auctionService.findAuctionById(auctionId);
+        } catch (AuctionNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Auction does not exist");
+        }
+    }
+
+    @PostMapping(value = "/auctions", consumes = {"multipart/form-data"})
+    AuctionDTO createAnAuction(@RequestPart("auction") AuctionDTO auctionDTO,
+                               @RequestPart(required = false) MultipartFile image,
+                               Principal principal) {
         User user = userRepository.findByUsername(principal.getName());
         try {
-            return auctionService.save(auctionDTO, user);
+            return auctionService.save(auctionDTO, user, image);
         } catch (CategoryNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Category does not exist");
+        } catch (IOException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

@@ -14,4 +14,5 @@ public class BidDTO {
     LocalDateTime placedAt;
     double amount;
     String placedByUsername;
+    String comment;
 }

@@ -6,6 +6,8 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.Min;
 import java.time.LocalDateTime;
 
 
@@ -25,6 +27,10 @@ public class Bid {
     @JoinColumn(name = "placed_by_id")
     private User placedBy;
 
+    @Column
+    private String comment;
+
+    @DecimalMin(value = "1.0", message = "Bid value is too small")
     @Column(nullable = false)
     private double amount;
 
