@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.MessageFormat;
+import java.util.UUID;
 
 @Component
 public class S3Accessor {
@@ -32,7 +33,7 @@ public class S3Accessor {
         final Path filePath = Paths.get(completeDirectory.toString(), requestFile.getOriginalFilename());
         final File file = multipartFileToFile(requestFile, filePath);
 
-        final String s3Key = directoryName + File.separator + requestFile.getOriginalFilename();
+        final String s3Key = directoryName + File.separator + requestFile.getOriginalFilename() + '-' + UUID.randomUUID();
         amazonS3.putObject(s3Config.getBucketName(),
                 s3Key,
                 file);
