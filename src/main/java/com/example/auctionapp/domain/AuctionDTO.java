@@ -12,10 +12,11 @@ import java.util.List;
 @Getter
 @Setter
 public class AuctionDTO {
-    long id;
-    String name;
-    String description;
-    ItemDTO item;
-    LocalDateTime closingTime;
-    long createdById;
+    private long id;
+    private String name;
+    private String description;
+    private ItemDTO item;
+    private LocalDateTime closingTime;
+    private long createdById;
+    private String s3ImageURL;
 }

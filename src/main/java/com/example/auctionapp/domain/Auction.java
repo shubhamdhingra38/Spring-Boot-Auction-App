@@ -27,6 +27,9 @@ public class Auction {
     @Column(nullable = false)
     private String description;
 
+    @Column
+    private String s3ImageURL;
+
     @OneToOne(mappedBy = "auction", cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
     private Item item;

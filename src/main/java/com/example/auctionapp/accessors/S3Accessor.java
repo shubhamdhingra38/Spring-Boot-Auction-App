@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.MessageFormat;
 
 @Component
 public class S3Accessor {
@@ -20,19 +21,22 @@ public class S3Accessor {
     private AmazonS3 amazonS3;
 
     private final String TEMP_STORAGE_DIRECTORY = "/tmp/images";
+    private final String S3_STORAGE_URL_FORMAT  = "https://{0}.s3-{1}.amazonaws.com/{2}";
 
 
     // TODO: Verify if file is actually an image
-    public void putS3Object(final MultipartFile requestFile, final String directoryName) throws IOException {
+    public String putS3Object(final MultipartFile requestFile, final String directoryName) throws IOException {
         final Path completeDirectory = Paths.get(TEMP_STORAGE_DIRECTORY, directoryName);
         checkIfDirectoryExistsElseCreate(completeDirectory.toString());
 
         final Path filePath = Paths.get(completeDirectory.toString(), requestFile.getOriginalFilename());
         final File file = multipartFileToFile(requestFile, filePath);
 
+        final String s3Key = directoryName + File.separator + requestFile.getOriginalFilename();
         amazonS3.putObject(s3Config.getBucketName(),
-                directoryName + File.separator + requestFile.getOriginalFilename(),
+                s3Key,
                 file);
+        return constructS3UploadedUrl(s3Key);
     }
 
     private File multipartFileToFile(final MultipartFile multipart, final Path filePath) throws IOException {
@@ -48,5 +52,12 @@ public class S3Accessor {
             System.out.println("Creating temporary directory: " + directory);
             dir.mkdir();
         }
+    }
+
+    private String constructS3UploadedUrl(final String key) {
+        return MessageFormat.format(S3_STORAGE_URL_FORMAT,
+                s3Config.getBucketName(),
+                s3Config.getBucketRegion(),
+                key);
     }
 }

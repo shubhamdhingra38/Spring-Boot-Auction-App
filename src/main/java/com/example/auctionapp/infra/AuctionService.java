@@ -74,11 +74,12 @@ public class AuctionService {
 
         auction.setCreatedBy(user);
         auction.setItem(item);
-        Auction savedAuction = auctionRepository.save(auction);
 
         // Save image
-        s3Accessor.putS3Object(image, user.getUsername());
+        final String s3ImageUrl = s3Accessor.putS3Object(image, user.getUsername());
+        auction.setS3ImageURL(s3ImageUrl);
 
+        Auction savedAuction = auctionRepository.save(auction);
         return convertToDto(savedAuction);
     }
 
