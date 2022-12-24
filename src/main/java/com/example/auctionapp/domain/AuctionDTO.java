@@ -19,4 +19,5 @@ public class AuctionDTO {
     private LocalDateTime closingTime;
     private long createdById;
     private String s3ImageURL;
+    private BidDTO currentHighestBid;
 }

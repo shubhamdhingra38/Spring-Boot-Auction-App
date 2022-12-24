@@ -5,10 +5,13 @@ import com.example.auctionapp.domain.Bid;
 import com.example.auctionapp.domain.BidDTO;
 import com.example.auctionapp.domain.User;
 import com.example.auctionapp.exceptions.AuctionNotFoundException;
+import com.example.auctionapp.exceptions.BidAmountLessException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
@@ -32,10 +35,11 @@ public class BidService {
         return bids.stream().map(bid -> convertToDto(bid)).toList();
     }
 
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public void placeBidForAuction(final long auctionId,
                                    final String userName,
                                    final double amount,
-                                   final String comment) throws AuctionNotFoundException {
+                                   final String comment) throws AuctionNotFoundException, BidAmountLessException {
         final Optional<Auction> auction = auctionRepository.findById(auctionId);
         final User user = userRepository.findByUsername(userName);
 
@@ -44,6 +48,12 @@ public class BidService {
         bid.setPlacedBy(user);
         bid.setAmount(amount);
         bid.setComment(comment);
+        // TODO: Check if bid is greater than previous bids and concurrency control
+
+        if (auction.get().getCurrentHighestBid() != null && auction.get().getCurrentHighestBid().getAmount() >= amount) {
+            throw new BidAmountLessException();
+        }
+        auction.get().setCurrentHighestBid(bid);
 
         bidRepository.save(bid);
     }

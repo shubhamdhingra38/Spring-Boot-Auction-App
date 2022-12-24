@@ -44,6 +44,10 @@ public class Auction {
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
+    @OneToOne(cascade = CascadeType.ALL, optional = true)
+    @JoinColumn(name = "bid_id")
+    private Bid currentHighestBid;
+
     public Auction(String name, String description) {
         this.name = name;
         this.description = description;

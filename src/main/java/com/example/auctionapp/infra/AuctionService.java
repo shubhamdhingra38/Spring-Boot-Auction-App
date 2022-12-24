@@ -11,9 +11,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
@@ -76,8 +76,10 @@ public class AuctionService {
         auction.setItem(item);
 
         // Save image
-        final String s3ImageUrl = s3Accessor.putS3Object(image, user.getUsername());
-        auction.setS3ImageURL(s3ImageUrl);
+        if (image != null && !image.isEmpty()) {
+            final String s3ImageUrl = s3Accessor.putS3Object(image, user.getUsername());
+            auction.setS3ImageURL(s3ImageUrl);
+        }
 
         Auction savedAuction = auctionRepository.save(auction);
         return convertToDto(savedAuction);

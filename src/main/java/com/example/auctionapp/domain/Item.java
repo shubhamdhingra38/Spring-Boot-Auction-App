@@ -25,7 +25,6 @@ public class Item {
 
 
     @OneToOne(cascade = CascadeType.ALL)
-    @MapsId
     @JoinColumn(name = "auction_id")
     private Auction auction;
 

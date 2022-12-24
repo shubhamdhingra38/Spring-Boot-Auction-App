@@ -3,6 +3,7 @@ package com.example.auctionapp.restinterface;
 import com.example.auctionapp.config.S3Config;
 import com.example.auctionapp.domain.BidDTO;
 import com.example.auctionapp.exceptions.AuctionNotFoundException;
+import com.example.auctionapp.exceptions.BidAmountLessException;
 import com.example.auctionapp.infra.BidService;
 import lombok.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,8 @@ public class BidController {
             bidService.placeBidForAuction(auctionId, principal.getName(), bidRequest.getAmount(), bidRequest.getComment());
         } catch (AuctionNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Auction does not exist");
+        } catch (BidAmountLessException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bid amount smaller than highest bid");
         }
     }
 

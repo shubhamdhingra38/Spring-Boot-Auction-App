@@ -2,6 +2,7 @@ package com.example.auctionapp.accessors;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.example.auctionapp.config.S3Config;
+import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,7 +27,8 @@ public class S3Accessor {
 
 
     // TODO: Verify if file is actually an image
-    public String putS3Object(final MultipartFile requestFile, final String directoryName) throws IOException {
+    public String putS3Object(@NonNull final MultipartFile requestFile,
+                              @NonNull final String directoryName) throws IOException {
         final Path completeDirectory = Paths.get(TEMP_STORAGE_DIRECTORY, directoryName);
         checkIfDirectoryExistsElseCreate(completeDirectory.toString());
 
