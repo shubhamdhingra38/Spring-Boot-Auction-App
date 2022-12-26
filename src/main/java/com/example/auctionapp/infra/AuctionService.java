@@ -2,7 +2,9 @@ package com.example.auctionapp.infra;
 
 import com.example.auctionapp.accessors.S3Accessor;
 import com.example.auctionapp.domain.*;
-import com.example.auctionapp.exceptions.AuctionDoesNotBelongToUserException;
+import com.example.auctionapp.dtos.AuctionDTO;
+import com.example.auctionapp.dtos.ItemDTO;
+import com.example.auctionapp.dtos.PaginatedAuctionsDTO;
 import com.example.auctionapp.exceptions.AuctionNotFoundException;
 import com.example.auctionapp.exceptions.CategoryNotFoundException;
 import org.modelmapper.ModelMapper;

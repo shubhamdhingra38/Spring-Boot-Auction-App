@@ -1,5 +1,6 @@
-package com.example.auctionapp.domain;
+package com.example.auctionapp.dtos;
 
+import com.example.auctionapp.dtos.AuctionDTO;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;

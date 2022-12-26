@@ -2,18 +2,16 @@ package com.example.auctionapp.infra;
 
 import com.example.auctionapp.domain.Auction;
 import com.example.auctionapp.domain.Bid;
-import com.example.auctionapp.domain.BidDTO;
+import com.example.auctionapp.dtos.BidDTO;
 import com.example.auctionapp.domain.User;
 import com.example.auctionapp.exceptions.AuctionNotFoundException;
 import com.example.auctionapp.exceptions.BidAmountLessException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 

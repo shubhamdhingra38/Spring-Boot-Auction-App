@@ -1,4 +1,4 @@
-package com.example.auctionapp.domain;
+package com.example.auctionapp.dtos;
 
 import lombok.Data;
 import lombok.Getter;

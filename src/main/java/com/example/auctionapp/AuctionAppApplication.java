@@ -1,14 +1,15 @@
 package com.example.auctionapp;
 
 import com.example.auctionapp.config.S3Config;
-import com.example.auctionapp.domain.Auction;
-import com.example.auctionapp.domain.Category;
-import com.example.auctionapp.domain.Item;
-import com.example.auctionapp.domain.User;
+import com.example.auctionapp.domain.*;
 import com.example.auctionapp.infra.AuctionRepository;
 import com.example.auctionapp.infra.ItemRepository;
 import com.example.auctionapp.infra.UserRepository;
+import org.modelmapper.Condition;
+import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.PropertyMap;
+import org.modelmapper.spi.MappingContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -156,6 +157,17 @@ public class AuctionAppApplication {
 
     @Bean
     public ModelMapper modelMapper() {
-        return new ModelMapper();
+        final ModelMapper modelMapper = new ModelMapper();
+//        modelMapper.addMappings(new PropertyMap<Profile, Profile>() {
+//            @Override
+//            protected void configure() {
+//                skip(destination.getId());
+//                skip(destination.getProfilePictureS3URL());
+//            }
+//        });
+
+        // TODO: Can't figure out to do this for a particular mapping only
+        modelMapper.getConfiguration().setSkipNullEnabled(true);
+        return modelMapper;
     }
 }

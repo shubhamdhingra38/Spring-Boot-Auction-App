@@ -1,15 +1,15 @@
 package com.example.auctionapp.restinterface;
 
 import com.example.auctionapp.domain.*;
+import com.example.auctionapp.dtos.AuctionDTO;
+import com.example.auctionapp.dtos.PaginatedAuctionsDTO;
 import com.example.auctionapp.exceptions.AuctionNotFoundException;
 import com.example.auctionapp.exceptions.CategoryNotFoundException;
 import com.example.auctionapp.infra.AuctionRepository;
 import com.example.auctionapp.infra.AuctionService;
 import com.example.auctionapp.infra.UserRepository;
-import com.fasterxml.jackson.annotation.JsonView;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,8 +17,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.security.Principal;
-import java.util.List;
-import java.util.Optional;
 
 @RequestMapping("/api/v1")
 @RestController
