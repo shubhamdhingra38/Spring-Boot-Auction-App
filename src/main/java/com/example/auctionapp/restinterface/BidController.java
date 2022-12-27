@@ -4,6 +4,7 @@ import com.example.auctionapp.dtos.BidDTO;
 import com.example.auctionapp.dtos.BidRequestDTO;
 import com.example.auctionapp.exceptions.AuctionNotFoundException;
 import com.example.auctionapp.exceptions.BidAmountLessException;
+import com.example.auctionapp.exceptions.BidForSelfAuctionException;
 import com.example.auctionapp.infra.BidService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,6 +35,8 @@ public class BidController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Auction does not exist");
         } catch (BidAmountLessException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bid amount smaller than highest bid");
+        } catch (BidForSelfAuctionException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot place bid on own auction");
         }
     }
 

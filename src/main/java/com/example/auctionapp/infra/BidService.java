@@ -6,6 +6,7 @@ import com.example.auctionapp.dtos.BidDTO;
 import com.example.auctionapp.domain.User;
 import com.example.auctionapp.exceptions.AuctionNotFoundException;
 import com.example.auctionapp.exceptions.BidAmountLessException;
+import com.example.auctionapp.exceptions.BidForSelfAuctionException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,7 +38,7 @@ public class BidService {
     public void placeBidForAuction(final long auctionId,
                                    final String userName,
                                    final double amount,
-                                   final String comment) throws AuctionNotFoundException, BidAmountLessException {
+                                   final String comment) throws AuctionNotFoundException, BidAmountLessException, BidForSelfAuctionException {
         final Optional<Auction> auction = auctionRepository.findById(auctionId);
         final User user = userRepository.findByUsername(userName);
 
@@ -46,10 +47,12 @@ public class BidService {
         bid.setPlacedBy(user);
         bid.setAmount(amount);
         bid.setComment(comment);
-        // TODO: Check if bid is greater than previous bids and concurrency control
 
         if (auction.get().getCurrentHighestBid() != null && auction.get().getCurrentHighestBid().getAmount() >= amount) {
             throw new BidAmountLessException();
+        }
+        if (auction.get().getCreatedBy().getId().equals(user.getId())) {
+            throw new BidForSelfAuctionException();
         }
         auction.get().setCurrentHighestBid(bid);
 
