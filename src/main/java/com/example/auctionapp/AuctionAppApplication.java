@@ -170,4 +170,18 @@ public class AuctionAppApplication {
         modelMapper.getConfiguration().setSkipNullEnabled(true);
         return modelMapper;
     }
+
+//    @Bean
+//    public CommandLineRunner createUsers(final UserRepository userRepository) {
+//        return (args) -> {
+//            final User user = new User();
+//            user.setUsername("jimhalpert");
+//            user.setPassword("password");
+//            final Profile profile = new Profile();
+//            profile.setFirstName("Jim");
+//            profile.setLastName("Halpert");
+//            user.setUserProfile(profile);
+//            userRepository.save(user);
+//        };
+//    }
 }

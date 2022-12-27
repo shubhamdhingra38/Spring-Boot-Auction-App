@@ -33,6 +33,7 @@ public class ProfileService {
         modelMapper.map(modifiedProfile, existingProfile);
 
         // Save profile picture
+        // TODO: Cleanup directory post saving
         if (image != null && !image.isEmpty()) {
             final String directoryName = userName + File.separator + PROFILE_DIRECTORY;
             final String s3ImageUrl = s3Accessor.putS3Object(image, directoryName);
