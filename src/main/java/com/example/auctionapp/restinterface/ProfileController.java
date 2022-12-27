@@ -6,8 +6,10 @@ import com.example.auctionapp.exceptions.ProfileNotFoundException;
 import com.example.auctionapp.infra.ProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.security.Principal;
 
 @RestController
@@ -27,9 +29,11 @@ public class ProfileController {
         return profileService.getProfile(profileId);
     }
 
-    @PatchMapping("/profile")
-    public ProfileDTO updateProfile(@Valid @RequestBody final ProfileUpdateRequestDTO profileUpdateRequest, final Principal principal) {
+    @PatchMapping(value = "/profile", consumes = {"multipart/form-data"})
+    public ProfileDTO updateProfile(
+            @RequestPart("profile") final ProfileUpdateRequestDTO profileUpdateRequest,
+            @RequestPart(required = false) final MultipartFile image, final Principal principal) throws IOException {
         final String username = principal.getName();
-        return profileService.updateProfile(profileUpdateRequest, username);
+        return profileService.updateProfile(profileUpdateRequest, image, username);
     }
 }

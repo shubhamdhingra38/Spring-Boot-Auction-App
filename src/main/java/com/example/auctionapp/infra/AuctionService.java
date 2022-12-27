@@ -16,13 +16,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class AuctionService {
-    private static int PAGE_SIZE = 4;
+    private final String AUCTION_DIRECTORY = "auction";
+    private static final int PAGE_SIZE = 4;
 
     @Autowired
     private AuctionRepository auctionRepository;
@@ -79,7 +81,8 @@ public class AuctionService {
 
         // Save image
         if (image != null && !image.isEmpty()) {
-            final String s3ImageUrl = s3Accessor.putS3Object(image, user.getUsername());
+            final String directoryName = user.getUsername() + File.separator + AUCTION_DIRECTORY;
+            final String s3ImageUrl = s3Accessor.putS3Object(image, directoryName);
             auction.setS3ImageURL(s3ImageUrl);
         }
 
