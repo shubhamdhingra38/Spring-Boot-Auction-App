@@ -19,6 +19,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.logout.CookieClearingLogoutHandler;
+import org.springframework.security.web.server.authentication.logout.DelegatingServerLogoutHandler;
+import org.springframework.security.web.server.authentication.logout.SecurityContextServerLogoutHandler;
+import org.springframework.security.web.server.authentication.logout.WebSessionServerLogoutHandler;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -80,16 +85,18 @@ public class AuctionAppApplication {
                 .authorizeHttpRequests((requests) -> requests
                         .antMatchers("/", "/home").permitAll()
                         .anyRequest().authenticated()
-                )
-                .logout((logout) -> logout.permitAll());
+                );
         http.cors();
+        http.logout().deleteCookies("JSESSIONID").invalidateHttpSession(true)
+                .and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout", "POST"));
+
         return http.build();
     }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         final CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:3000"));
+        configuration.setAllowedOrigins(List.of("http://localhost:8000", "http://localhost:3000"));
         configuration.setAllowedMethods(List.of("HEAD",
                 "GET", "POST", "PUT", "DELETE", "PATCH"));
         // setAllowCredentials(true) is important, otherwise:
