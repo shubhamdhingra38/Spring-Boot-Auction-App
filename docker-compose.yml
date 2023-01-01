@@ -1,0 +1,16 @@
+version: "3.9"
+services:
+  mysql:
+    container_name: auctionapp_mysql
+    build: .
+    ports:
+      - "3307:3306"
+    volumes:
+      - ./mysql/data:/var/lib/mysql
+  backend:
+    container_name: auctionapp_backend
+    build: /Users/shubhamdhingra/Downloads/AuctionApp
+    ports:
+      - "8081:8080"
+    depends_on:
+      - mysql
