@@ -53,7 +53,7 @@ public class S3Accessor {
         final File dir = new File(directory);
         if (!dir.exists()) {
             System.out.println("Creating temporary directory: " + directory);
-            dir.mkdir();
+            dir.mkdirs();
         }
     }
 
