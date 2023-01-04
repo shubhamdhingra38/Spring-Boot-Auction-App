@@ -35,5 +35,6 @@ build/
 ### Database files ###
 mysql/data/*
 
-### Frontend Build files ###
-nginx/app/*
+
+### Frontend files ###
+frontend/app/*

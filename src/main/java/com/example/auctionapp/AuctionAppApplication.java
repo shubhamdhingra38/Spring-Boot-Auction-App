@@ -88,7 +88,7 @@ public class AuctionAppApplication {
                 );
         http.cors();
         http.logout().deleteCookies("JSESSIONID").invalidateHttpSession(true)
-                .and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout", "POST"));
+                .and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/api/v1/logout", "POST"));
 
         return http.build();
     }

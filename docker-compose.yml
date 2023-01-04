@@ -14,6 +14,15 @@ services:
       - "8081:8080"
     depends_on:
       - mysql
+  frontend:
+    container_name: auctionappfrontend
+    build: frontend
+    environment:
+      - WDS_SOCKET_PORT=0
+    ports:
+      - "3001:3000"
+    volumes:
+      - ./frontend/app:/app
   webserver:
     container_name: auctionappnginx
     build: nginx
@@ -21,3 +30,4 @@ services:
       - "80:80"
     depends_on:
       - backend
+      - frontend

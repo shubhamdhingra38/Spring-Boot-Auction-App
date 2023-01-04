@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.security.Principal;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -25,6 +26,11 @@ public class UserController {
     @PostMapping("/user")
     public void createUser(@Valid @RequestBody final UserCreateRequestDTO userRequest) throws UsernameExistsException {
         userService.createUser(userRequest);
+    }
+
+    @PostMapping("/login")
+    public void login(final Principal principal) {
+        System.out.println(principal.getName() + " logged in");
     }
 
 }
