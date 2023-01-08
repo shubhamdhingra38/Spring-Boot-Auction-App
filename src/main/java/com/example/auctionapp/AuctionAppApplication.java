@@ -1,36 +1,29 @@
 package com.example.auctionapp;
 
-import com.example.auctionapp.config.S3Config;
-import com.example.auctionapp.domain.*;
-import com.example.auctionapp.infra.AuctionRepository;
-import com.example.auctionapp.infra.ItemRepository;
 import com.example.auctionapp.infra.UserRepository;
-import org.modelmapper.Condition;
-import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.PropertyMap;
-import org.modelmapper.spi.MappingContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.logout.CookieClearingLogoutHandler;
-import org.springframework.security.web.server.authentication.logout.DelegatingServerLogoutHandler;
-import org.springframework.security.web.server.authentication.logout.SecurityContextServerLogoutHandler;
-import org.springframework.security.web.server.authentication.logout.WebSessionServerLogoutHandler;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
+
 
 @SpringBootApplication
 @EnableWebSecurity
@@ -81,15 +74,35 @@ public class AuctionAppApplication {
      */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf().disable().httpBasic().and()
-                .authorizeHttpRequests((requests) -> requests
-                        .antMatchers("/", "/home").permitAll()
+        http.authorizeHttpRequests((requests) -> requests
+                        .antMatchers("/", "/home", "/auth/login", "/auth/logout").permitAll()
                         .anyRequest().authenticated()
-                );
+        );
         http.cors();
         http.logout().deleteCookies("JSESSIONID").invalidateHttpSession(true)
-                .and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/api/v1/logout", "POST"));
+                .and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/auth/logout", "POST"));
 
+        // Basic Auth should only be for testing, not recommended for production
+        // Also weird thing: All browsers I tested actually store the username password after `WWW-Authenticate` challenge,
+        // so it caused some trouble figuring out how the client is sending the `Authorization` header even though the
+        // frontend code does not explicitly set it.
+        http.httpBasic().disable();
+
+        // Thoughts:
+        // For form based login, you don't need CSRF protection.
+        // It doesn't trigger any side effect other than logging in the user and the attacker won't have the username or password
+        // If user is not logged in, that means the user does not have the cookie. So attacker isn't doing anything.
+        // If user is logged in, what is the attacker trying to do with login form? Nothing will be affected.
+        // CORS will protect the rest
+        //
+        // Actually above is almost correct, but wrong!
+        // https://stackoverflow.com/questions/6412813/do-login-forms-need-tokens-against-csrf-attacks/15350123#15350123
+
+        // TODO: Figure out if CSRF Token is still needed for REST API using Cookie Auth, this is not clear yet
+
+        http.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
+        // Wasted some time here because POSTMAN decides to re-direct automatically with the same method, not GET
+        http.formLogin().loginProcessingUrl("/auth/login").defaultSuccessUrl("/", true);
         return http.build();
     }
 
@@ -177,6 +190,15 @@ public class AuctionAppApplication {
         modelMapper.getConfiguration().setSkipNullEnabled(true);
         return modelMapper;
     }
+
+//    @Bean
+//    public RememberMeServices rememberMeServices(final UserDetailsService userDetailsService) {
+//        final String SECRET_KEY = "uUx}k@cHAd;=}q@.)@Q6";
+//        final PersistentTokenRepository persistentTokenRepository = new JdbcTokenRepositoryImpl();
+//        final PersistentTokenBasedRememberMeServices persistentTokenBasedRememberMeServices =
+//                new PersistentTokenBasedRememberMeServices(SECRET_KEY, userDetailsService, persistentTokenRepository);
+//        return persistentTokenBasedRememberMeServices;
+//    }
 
 //    @Bean
 //    public CommandLineRunner createUsers(final UserRepository userRepository) {
