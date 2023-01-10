@@ -10,7 +10,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -75,7 +77,7 @@ public class AuctionAppApplication {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests((requests) -> requests
-                        .antMatchers("/", "/home", "/auth/login", "/auth/logout").permitAll()
+                        .antMatchers("/", "/home", "/auth/login", "/auth/logout", "/auth/csrf").permitAll()
                         .anyRequest().authenticated()
         );
         http.cors();
@@ -102,7 +104,17 @@ public class AuctionAppApplication {
 
         http.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
         // Wasted some time here because POSTMAN decides to re-direct automatically with the same method, not GET
-        http.formLogin().loginProcessingUrl("/auth/login").defaultSuccessUrl("/", true);
+        http.formLogin().loginProcessingUrl("/auth/login").successHandler(new AuthenticationSuccessHandler() {
+            @Override
+            public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+                response.setStatus(HttpServletResponse.SC_OK);
+            }
+        }).failureHandler(new AuthenticationFailureHandler() {
+            @Override
+            public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
+                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            }
+        });
         return http.build();
     }
 

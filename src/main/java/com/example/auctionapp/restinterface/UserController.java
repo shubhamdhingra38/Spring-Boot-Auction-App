@@ -28,9 +28,9 @@ public class UserController {
         userService.createUser(userRequest);
     }
 
-    @PostMapping("/login")
-    public void login(final Principal principal) {
-        System.out.println(principal.getName() + " logged in");
-    }
+//    @PostMapping("/login")
+//    public void login(final Principal principal) {
+//        System.out.println(principal.getName() + " logged in");
+//    }
 
 }
