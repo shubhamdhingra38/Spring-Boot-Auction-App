@@ -77,7 +77,7 @@ public class AuctionAppApplication {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests((requests) -> requests
-                        .antMatchers("/", "/home", "/auth/login", "/auth/logout", "/auth/csrf").permitAll()
+                        .antMatchers("/", "/home", "/auth/login", "/auth/logout", "/auth/csrf", "/auth/register").permitAll()
                         .anyRequest().authenticated()
         );
         http.cors();
