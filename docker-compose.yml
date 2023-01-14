@@ -14,6 +14,8 @@ services:
       - "8081:8080"
     depends_on:
       - mysql
+    env_file:
+      - aws-creds.env
   frontend:
     container_name: auctionappfrontend
     build: frontend
