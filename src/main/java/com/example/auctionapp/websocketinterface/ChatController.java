@@ -9,7 +9,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.security.Principal;
-import java.util.List;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 
 @Controller
 public class ChatController {
@@ -18,7 +19,11 @@ public class ChatController {
 
     @MessageMapping("/chat/{channelName}")
     public void chat(final Principal principal, @DestinationVariable final String channelName, final String body) {
-        final MessageResponseDTO messageResponseDTO = MessageResponseDTO.builder().userName(principal.getName()).message(body).build();
+        final MessageResponseDTO messageResponseDTO = MessageResponseDTO.builder()
+                .userName(principal.getName())
+                .message(body)
+                .dateTime(ZonedDateTime.now(ZoneOffset.UTC))
+                .build();
         simpMessagingTemplate.convertAndSend("/topic/" + channelName, messageResponseDTO);
     }
 }
