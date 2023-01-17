@@ -115,6 +115,8 @@ public class AuctionAppApplication {
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             }
         });
+
+        http.csrf().disable(); // TODO: REMOVE!!!!!!!!!!!!!!!
         return http.build();
     }
 
