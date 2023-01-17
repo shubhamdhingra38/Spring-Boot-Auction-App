@@ -1,5 +1,6 @@
 package com.example.auctionapp.websocketinterface;
 
+import com.example.auctionapp.dtos.MessageResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -16,8 +17,8 @@ public class ChatController {
     private SimpMessagingTemplate simpMessagingTemplate;
 
     @MessageMapping("/chat/{channelName}")
-    public String chat(final Principal principal, @DestinationVariable final String channelName, final String body) {
-        simpMessagingTemplate.convertAndSend("/topic/" + channelName, body);
-        return "Hello, world!";
+    public void chat(final Principal principal, @DestinationVariable final String channelName, final String body) {
+        final MessageResponseDTO messageResponseDTO = MessageResponseDTO.builder().userName(principal.getName()).message(body).build();
+        simpMessagingTemplate.convertAndSend("/topic/" + channelName, messageResponseDTO);
     }
 }
