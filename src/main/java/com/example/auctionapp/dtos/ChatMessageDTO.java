@@ -1,17 +1,18 @@
 package com.example.auctionapp.dtos;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
+@Builder
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class ChatMessageDTO {
-    private String sentToUsername;
-    private String sentByUsername;
-    private LocalDateTime sentAt;
-    private String content;
+    private String userName;
+    private ZonedDateTime sentAt;
+    private String message;
 }

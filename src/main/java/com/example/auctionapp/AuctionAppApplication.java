@@ -1,6 +1,9 @@
 package com.example.auctionapp;
 
+import com.example.auctionapp.domain.ChatMessage;
+import com.example.auctionapp.dtos.ChatMessageDTO;
 import com.example.auctionapp.infra.UserRepository;
+import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +27,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 
@@ -192,12 +198,24 @@ public class AuctionAppApplication {
     @Bean
     public ModelMapper modelMapper() {
         final ModelMapper modelMapper = new ModelMapper();
+//        Converter<LocalDateTime, ZonedDateTime> toZonedDateTime =
+//                ctx -> ctx.getSource() == null ? null : ctx.getSource().atZone(ZoneId.of("UTC"));
+//        modelMapper.addConverter(toZonedDateTime);
 //        modelMapper.addMappings(new PropertyMap<Profile, Profile>() {
 //            @Override
 //            protected void configure() {
 //                skip(destination.getId());
 //                skip(destination.getProfilePictureS3URL());
 //            }
+//        });
+
+//        modelMapper.typeMap(ChatMessage.class, ChatMessageDTO.class).addMappings(mapper -> {
+//            mapper.map(src -> src.getSentBy().getUsername(),
+//                    ChatMessageDTO::setUserName);
+//            mapper.map(src -> src.getContent(),
+//                    ChatMessageDTO::setMessage);
+//            mapper.map(src -> src.getSentAt(),
+//                    ChatMessageDTO::setSentAt);
 //        });
 
         // TODO: Can't figure out to do this for a particular mapping only

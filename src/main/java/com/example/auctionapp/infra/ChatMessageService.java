@@ -1,20 +1,17 @@
 package com.example.auctionapp.infra;
 
-import com.example.auctionapp.domain.Auction;
 import com.example.auctionapp.domain.ChatMessage;
 import com.example.auctionapp.domain.User;
-import com.example.auctionapp.dtos.AuctionDTO;
 import com.example.auctionapp.dtos.ChatMessageDTO;
-import com.example.auctionapp.dtos.MessageResponseDTO;
 import com.example.auctionapp.dtos.PaginatedChatMessagesDTO;
 import com.example.auctionapp.exceptions.UserNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,7 +36,10 @@ public class ChatMessageService {
         final Page<ChatMessage> chatMessages = chatMessageRepository.findChatMessageBySentByAndSentToOrderBySentAtDesc(sentByUser,
                 sendToUser.get(), pageRequest);
 
-        final List<ChatMessageDTO> messages = chatMessages.stream().map(chatMessage -> modelMapper.map(chatMessage, ChatMessageDTO.class)).toList();
+        final List<ChatMessageDTO> messages = chatMessages.stream().map(chatMessage ->
+                ChatMessageDTO.builder().message(chatMessage.getContent())
+                .sentAt(chatMessage.getSentAt().atZone(ZoneId.of("UTC")))
+                .userName(chatMessage.getSentBy().getUsername()).build()).toList();
         return PaginatedChatMessagesDTO.builder().numPages(chatMessages.getTotalPages()).chatMessages(messages).build();
     }
 
