@@ -4,6 +4,7 @@ import com.example.auctionapp.domain.Auction;
 import com.example.auctionapp.domain.Bid;
 import com.example.auctionapp.dtos.BidDTO;
 import com.example.auctionapp.domain.User;
+import com.example.auctionapp.exceptions.AuctionIsClosedException;
 import com.example.auctionapp.exceptions.AuctionNotFoundException;
 import com.example.auctionapp.exceptions.BidAmountLessException;
 import com.example.auctionapp.exceptions.BidForSelfAuctionException;
@@ -38,7 +39,7 @@ public class BidService {
     public void placeBidForAuction(final long auctionId,
                                    final String userName,
                                    final double amount,
-                                   final String comment) throws AuctionNotFoundException, BidAmountLessException, BidForSelfAuctionException {
+                                   final String comment) throws AuctionNotFoundException, BidAmountLessException, BidForSelfAuctionException, AuctionIsClosedException {
         final Optional<Auction> auction = auctionRepository.findById(auctionId);
         final User user = userRepository.findByUsername(userName);
 
@@ -48,6 +49,10 @@ public class BidService {
         bid.setAmount(amount);
         bid.setComment(comment);
 
+
+        if (auction.get().getIsClosed()) {
+            throw new AuctionIsClosedException();
+        }
         if (auction.get().getCurrentHighestBid() != null && auction.get().getCurrentHighestBid().getAmount() >= amount) {
             throw new BidAmountLessException();
         }

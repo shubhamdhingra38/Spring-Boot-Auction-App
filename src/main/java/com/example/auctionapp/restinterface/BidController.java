@@ -2,6 +2,7 @@ package com.example.auctionapp.restinterface;
 
 import com.example.auctionapp.dtos.BidDTO;
 import com.example.auctionapp.dtos.BidRequestDTO;
+import com.example.auctionapp.exceptions.AuctionIsClosedException;
 import com.example.auctionapp.exceptions.AuctionNotFoundException;
 import com.example.auctionapp.exceptions.BidAmountLessException;
 import com.example.auctionapp.exceptions.BidForSelfAuctionException;
@@ -28,7 +29,7 @@ public class BidController {
 
     @PostMapping("/auction/{auctionId}/bid")
     public void bidOnAuction(@PathVariable long auctionId, final Principal principal,
-                             @RequestBody BidRequestDTO bidRequest) {
+                             @RequestBody BidRequestDTO bidRequest) throws AuctionIsClosedException {
         try {
             bidService.placeBidForAuction(auctionId, principal.getName(), bidRequest.getAmount(), bidRequest.getComment());
         } catch (AuctionNotFoundException e) {

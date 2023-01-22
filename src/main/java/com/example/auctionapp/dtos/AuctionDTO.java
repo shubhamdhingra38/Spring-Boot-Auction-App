@@ -18,4 +18,5 @@ public class AuctionDTO {
     private long createdById;
     private String s3ImageURL;
     private BidDTO currentHighestBid;
+    private boolean isClosed;
 }

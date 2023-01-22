@@ -8,6 +8,7 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 
 @Setter
@@ -55,12 +56,17 @@ public class Auction {
 
     @PrePersist
     public void prePersist() {
+        final LocalDateTime localDateTime = LocalDateTime.now(ZoneId.of("UTC"));
         if(closingTime == null) {
-            closingTime = LocalDateTime.now().plusDays(7);
+            closingTime = localDateTime.plusWeeks(1);
         }
         if(createdAt == null) {
-            createdAt = LocalDateTime.now();
+            createdAt = localDateTime;
         }
     }
 
+    public boolean getIsClosed() {
+        final LocalDateTime localDateTime = LocalDateTime.now(ZoneId.of("UTC"));
+        return localDateTime.isAfter(closingTime);
+    }
 }

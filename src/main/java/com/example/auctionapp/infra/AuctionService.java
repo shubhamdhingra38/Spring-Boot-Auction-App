@@ -5,6 +5,7 @@ import com.example.auctionapp.domain.*;
 import com.example.auctionapp.dtos.AuctionDTO;
 import com.example.auctionapp.dtos.ItemDTO;
 import com.example.auctionapp.dtos.PaginatedAuctionsDTO;
+import com.example.auctionapp.exceptions.AuctionIsClosedException;
 import com.example.auctionapp.exceptions.AuctionNotFoundException;
 import com.example.auctionapp.exceptions.CategoryNotFoundException;
 import org.modelmapper.ModelMapper;
