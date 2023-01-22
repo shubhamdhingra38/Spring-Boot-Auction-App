@@ -4,6 +4,7 @@ import com.example.auctionapp.domain.ChatMessage;
 import com.example.auctionapp.domain.User;
 import com.example.auctionapp.dtos.ChatMessageDTO;
 import com.example.auctionapp.dtos.PaginatedChatMessagesDTO;
+import com.example.auctionapp.dtos.UserDTO;
 import com.example.auctionapp.exceptions.UserNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +13,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.ZoneId;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ChatMessageService {
@@ -55,5 +58,12 @@ public class ChatMessageService {
         chatMessage.setSentBy(sentByUser);
         chatMessage.setSentTo(sendToUser.get());
         chatMessageRepository.save(chatMessage);
+    }
+
+    public List<UserDTO> getUsersWithChatHistory(final String userName) {
+        final User user = userRepository.findByUsername(userName);
+        final List<Long> userIds = chatMessageRepository.getDistinctUsersBySentByOrSentAt(user.getId());
+        final List<User> users = userRepository.findAllById(userIds);
+        return users.stream().map(userEntity -> modelMapper.map(userEntity, UserDTO.class)).collect(Collectors.toList());
     }
 }
