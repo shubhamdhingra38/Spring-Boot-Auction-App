@@ -5,6 +5,7 @@ import com.example.auctionapp.dtos.ChatMessageDTO;
 import com.example.auctionapp.infra.UserRepository;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.MatchingStrategies;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -235,6 +236,7 @@ public class AuctionAppApplication {
 
         // TODO: Can't figure out to do this for a particular mapping only
         modelMapper.getConfiguration().setSkipNullEnabled(true);
+        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         return modelMapper;
     }
 
