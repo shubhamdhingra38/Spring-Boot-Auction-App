@@ -127,13 +127,14 @@ public class AuctionAppApplication {
         });
 
         http.csrf().disable(); // TODO: REMOVE!!!!!!!!!!!!!!!
+//        http.cors().and().csrf().disable();
         return http.build();
     }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         final CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost"));
+        configuration.setAllowedOrigins(List.of("http://34.240.38.11/"));
         configuration.setAllowedMethods(List.of("HEAD",
                 "GET", "POST", "PUT", "DELETE", "PATCH"));
         // setAllowCredentials(true) is important, otherwise:
