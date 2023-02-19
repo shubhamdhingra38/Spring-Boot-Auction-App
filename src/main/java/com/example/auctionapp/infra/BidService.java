@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class BidService {
@@ -33,6 +34,11 @@ public class BidService {
     public List<BidDTO> findBidsForAuction(final long auctionId) {
         List<Bid> bids = bidRepository.findAllByAuctionIdOrderByAmountDesc(auctionId);
         return bids.stream().map(bid -> convertToDto(bid)).toList();
+    }
+
+    public List<BidDTO> findBidsPlacedByUser(final String userName) {
+        final List<Bid> bids = bidRepository.findBidByPlacedByUsernameOrderByPlacedAtDesc(userName);
+        return bids.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
     @Transactional(isolation = Isolation.SERIALIZABLE)

@@ -27,6 +27,12 @@ public class BidController {
         return bidService.findBidsForAuction(auctionId);
     }
 
+    @GetMapping("/myBids")
+    public List<BidDTO> findBidsPlacedByUser(final Principal principal) {
+        final String userName = principal.getName();
+        return bidService.findBidsPlacedByUser(userName);
+    }
+
     @PostMapping("/auction/{auctionId}/bid")
     public void bidOnAuction(@PathVariable long auctionId, final Principal principal,
                              @RequestBody BidRequestDTO bidRequest) throws AuctionIsClosedException {
