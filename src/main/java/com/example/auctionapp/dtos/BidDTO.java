@@ -10,9 +10,10 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class BidDTO {
-    long id;
+    Long id;
     LocalDateTime placedAt;
     double amount;
     String placedByUsername;
+    Long placedById;
     String comment;
 }

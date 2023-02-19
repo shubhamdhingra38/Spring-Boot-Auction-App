@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class AuctionService {
@@ -44,6 +45,11 @@ public class AuctionService {
     public AuctionDTO findAuctionById(long auctionId) throws AuctionNotFoundException {
         Optional<Auction> auction = auctionRepository.findById(auctionId);
         return convertToDto(auction.orElseThrow(() -> new AuctionNotFoundException()));
+    }
+
+    public List<AuctionDTO> findAllAuctionsByUser(final String userName) {
+        List<Auction> auctionsList = auctionRepository.findAuctionByCreatedByUsernameOrderByCreatedAtDesc(userName);
+        return auctionsList.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
     public PaginatedAuctionsDTO findAllAuctions(int pageNumber, String createdAtOrder) {

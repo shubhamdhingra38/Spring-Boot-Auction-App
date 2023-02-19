@@ -17,4 +17,6 @@ public interface AuctionRepository extends PagingAndSortingRepository<Auction, L
 
     @Query("SELECT auction FROM Auction auction ORDER BY auction.closingTime DESC")
     List<Auction> findAllByClosingTimeDesc();
+
+    List<Auction> findAuctionByCreatedByUsernameOrderByCreatedAtDesc(final String userName);
 }

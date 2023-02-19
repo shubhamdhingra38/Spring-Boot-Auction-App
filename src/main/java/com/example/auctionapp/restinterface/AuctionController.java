@@ -17,6 +17,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.security.Principal;
+import java.util.List;
 
 @RequestMapping("/api/v1")
 @RestController
@@ -37,6 +38,12 @@ public class AuctionController {
     PaginatedAuctionsDTO getAllAuctions(@RequestParam(required = false, defaultValue = "asc") String createdAtOrder,
                                         @RequestParam(defaultValue = "0") int pageNumber) {
         return auctionService.findAllAuctions(pageNumber, createdAtOrder);
+    }
+
+    @GetMapping("/myAuctions")
+    List<AuctionDTO> getMyAuctions(final Principal principal) {
+        final String userName = principal.getName();
+        return auctionService.findAllAuctionsByUser(userName);
     }
 
     @GetMapping("/auction/{auctionId}")
