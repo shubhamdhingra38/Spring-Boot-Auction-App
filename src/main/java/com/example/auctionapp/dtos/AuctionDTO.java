@@ -10,12 +10,12 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class AuctionDTO {
-    private long id;
+    private Long id;
     private String name;
     private String description;
     private ItemDTO item;
     private LocalDateTime closingTime;
-    private long createdById;
+    private Long createdById;
     private String s3ImageURL;
     private BidDTO currentHighestBid;
     private boolean isClosed;

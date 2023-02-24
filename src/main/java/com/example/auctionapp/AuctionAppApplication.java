@@ -135,7 +135,7 @@ public class AuctionAppApplication {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         final CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://34.240.38.11/"));
+        configuration.setAllowedOrigins(List.of("http://localhost/"));
         configuration.setAllowedMethods(List.of("HEAD",
                 "GET", "POST", "PUT", "DELETE", "PATCH"));
         // setAllowCredentials(true) is important, otherwise:
@@ -236,7 +236,7 @@ public class AuctionAppApplication {
 
         // TODO: Can't figure out to do this for a particular mapping only
         modelMapper.getConfiguration().setSkipNullEnabled(true);
-        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+//        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         return modelMapper;
     }
 
