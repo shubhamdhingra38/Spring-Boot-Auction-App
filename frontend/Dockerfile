@@ -11,7 +11,11 @@ FROM node:18
 #
 #CMD serve
 
-WORKDIR /app
+ARG GITHUB_TOKEN
 
-# TODO: Install first
+
+RUN git clone "https://${GITHUB_TOKEN}@github.com/shubhamdhingra38/AuctionAppFrontend.git"
+WORKDIR /AuctionAppFrontend
+RUN npm install
+
 CMD npm run start
