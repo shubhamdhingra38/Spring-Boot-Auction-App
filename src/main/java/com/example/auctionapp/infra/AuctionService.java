@@ -23,6 +23,17 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+enum SortAuctionOrder {
+    BIDS("bids"),
+    CREATED_AT("createdAt");
+
+    public final String label;
+
+    private SortAuctionOrder(String label) {
+        this.label = label;
+    }
+}
+
 @Service
 public class AuctionService {
     private final String AUCTION_DIRECTORY = "auction";
@@ -52,15 +63,15 @@ public class AuctionService {
         return auctionsList.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
-    public PaginatedAuctionsDTO findAllAuctions(int pageNumber, String createdAtOrder) {
-        PageRequest pageRequest;
-        if (createdAtOrder.equals("desc")) {
-            pageRequest = PageRequest.of(pageNumber, PAGE_SIZE, Sort.by("createdAt").descending());
+    public PaginatedAuctionsDTO findAllAuctions(int pageNumber, String sortBy, String sortOrder) {
+        Page<Auction> auctions;
+        if (sortBy.equals(SortAuctionOrder.BIDS.label)) {
+            auctions = findAllAuctionsSortByBidsOrder(sortOrder, pageNumber);
+        } else if (sortBy.equals(SortAuctionOrder.CREATED_AT.label)) {
+            auctions = findAllAuctionsSortByCreatedAtOrder(sortOrder, pageNumber);
         } else {
-            pageRequest = PageRequest.of(pageNumber, PAGE_SIZE);
+            auctions = findAllAuctions(pageNumber);
         }
-        Page<Auction> auctions = auctionRepository.findAll(pageRequest);
-
         List<AuctionDTO> auctionList = auctions.stream().map(auction -> convertToDto(auction)).toList();
 
         PaginatedAuctionsDTO paginatedAuctionsDTO = PaginatedAuctionsDTO
@@ -68,6 +79,27 @@ public class AuctionService {
         return paginatedAuctionsDTO;
     }
 
+    private Page<Auction> findAllAuctions(final int pageNumber) {
+        Page<Auction> auctions = auctionRepository.findAll(PageRequest.of(pageNumber, PAGE_SIZE));
+        return auctions;
+    }
+
+    private Page<Auction> findAllAuctionsSortByCreatedAtOrder(final String createdAtOrder, final int pageNumber) {
+        PageRequest pageRequest;
+        if (createdAtOrder.equals("desc")) {
+            pageRequest = PageRequest.of(pageNumber, PAGE_SIZE, Sort.by("createdAt").descending());
+        } else {
+            pageRequest = PageRequest.of(pageNumber, PAGE_SIZE, Sort.by("createdAt").ascending());
+        }
+        Page<Auction> auctions = auctionRepository.findAll(pageRequest);
+        return auctions;
+    }
+
+    private Page<Auction> findAllAuctionsSortByBidsOrder(final String bidsOrder, final int pageNumber) {
+        PageRequest pageRequest = PageRequest.of(pageNumber, PAGE_SIZE);
+        Page<Auction> auctions = auctionRepository.findAllByBidsFrequency(bidsOrder.toLowerCase(), pageRequest);
+        return auctions;
+    }
 
     @Transactional
     public AuctionDTO save(AuctionDTO auctionDTO, User user, MultipartFile image) throws CategoryNotFoundException, IOException {

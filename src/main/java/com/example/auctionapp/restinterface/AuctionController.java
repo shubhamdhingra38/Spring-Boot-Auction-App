@@ -35,9 +35,10 @@ public class AuctionController {
     private ModelMapper modelMapper;
 
     @GetMapping("/auctions")
-    PaginatedAuctionsDTO getAllAuctions(@RequestParam(required = false, defaultValue = "asc") String createdAtOrder,
+    PaginatedAuctionsDTO getAllAuctions(@RequestParam(required = false, defaultValue = "createdAt") String sortBy,
+                                        @RequestParam(required = false, defaultValue = "asc") String sortOrder,
                                         @RequestParam(defaultValue = "0") int pageNumber) {
-        return auctionService.findAllAuctions(pageNumber, createdAtOrder);
+        return auctionService.findAllAuctions(pageNumber, sortBy, sortOrder);
     }
 
     @GetMapping("/myAuctions")
