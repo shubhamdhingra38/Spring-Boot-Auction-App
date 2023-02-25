@@ -2,6 +2,7 @@ package com.example.auctionapp.restinterface;
 
 import com.example.auctionapp.dtos.BidDTO;
 import com.example.auctionapp.dtos.BidRequestDTO;
+import com.example.auctionapp.dtos.MyBidDTO;
 import com.example.auctionapp.exceptions.AuctionIsClosedException;
 import com.example.auctionapp.exceptions.AuctionNotFoundException;
 import com.example.auctionapp.exceptions.BidAmountLessException;
@@ -28,7 +29,7 @@ public class BidController {
     }
 
     @GetMapping("/myBids")
-    public List<BidDTO> findBidsPlacedByUser(final Principal principal) {
+    public List<MyBidDTO> findBidsPlacedByUser(final Principal principal) {
         final String userName = principal.getName();
         return bidService.findBidsPlacedByUser(userName);
     }

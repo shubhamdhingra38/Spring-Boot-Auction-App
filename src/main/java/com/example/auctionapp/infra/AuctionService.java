@@ -112,6 +112,7 @@ public class AuctionService {
             throw new CategoryNotFoundException();
         }
         Item item = modelMapper.map(itemDto, Item.class);
+        item.setId(null);
         item.setAuction(auction);
         item.setCategory(category.get());
 

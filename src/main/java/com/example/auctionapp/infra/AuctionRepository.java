@@ -21,7 +21,11 @@ public interface AuctionRepository extends PagingAndSortingRepository<Auction, L
             "GROUP BY auction.id\n" +
             "ORDER BY\n" +
             "CASE WHEN ?1 = 'asc' THEN COUNT(bid.id) END ASC,\n" +
-            "CASE WHEN ?1 = 'desc' THEN COUNT(bid.id) END DESC", nativeQuery = true)
+            "CASE WHEN ?1 = 'desc' THEN COUNT(bid.id) END DESC",
+            countQuery = "SELECT COUNT(*) FROM AUCTION auction\n" +
+                    "LEFT  JOIN BID bid\n" +
+                    "ON bid.auction_id = auction.id\n",
+            nativeQuery = true)
     Page<Auction> findAllByBidsFrequency(final String bidsFrequencyOrder, Pageable pageable);
 
     @Query("SELECT auction FROM Auction auction ORDER BY auction.closingTime DESC")

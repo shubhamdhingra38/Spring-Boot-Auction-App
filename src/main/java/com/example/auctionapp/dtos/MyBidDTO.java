@@ -1,20 +1,21 @@
 package com.example.auctionapp.dtos;
 
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 
-
 @Data
-@Getter
-@Setter
-public class BidDTO {
+@ToString
+public class MyBidDTO {
     Long id;
     LocalDateTime placedAt;
     Double amount;
     String placedByUsername;
     Long placedById;
     String comment;
+    LocalDateTime auctionClosingTime;
+    String auctionName;
+    Double auctionCurrentHighestBidAmount;
+    Long auctionId;
 }

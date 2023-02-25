@@ -4,6 +4,7 @@ import com.example.auctionapp.domain.Auction;
 import com.example.auctionapp.domain.Bid;
 import com.example.auctionapp.dtos.BidDTO;
 import com.example.auctionapp.domain.User;
+import com.example.auctionapp.dtos.MyBidDTO;
 import com.example.auctionapp.exceptions.AuctionIsClosedException;
 import com.example.auctionapp.exceptions.AuctionNotFoundException;
 import com.example.auctionapp.exceptions.BidAmountLessException;
@@ -36,9 +37,9 @@ public class BidService {
         return bids.stream().map(bid -> convertToDto(bid)).toList();
     }
 
-    public List<BidDTO> findBidsPlacedByUser(final String userName) {
+    public List<MyBidDTO> findBidsPlacedByUser(final String userName) {
         final List<Bid> bids = bidRepository.findBidByPlacedByUsernameOrderByPlacedAtDesc(userName);
-        return bids.stream().map(this::convertToDto).collect(Collectors.toList());
+        return bids.stream().map(bid -> modelMapper.map(bid, MyBidDTO.class)).collect(Collectors.toList());
     }
 
     @Transactional(isolation = Isolation.SERIALIZABLE)
