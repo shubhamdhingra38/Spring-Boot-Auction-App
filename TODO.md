@@ -4,18 +4,19 @@
 - Explore my listings
 - Explore my bids
 - Deploy to AWS
+- Fix ModelMapper issue
+- Sort By Bids not working
+- Filter by category
+- Fix timezone
 
 
 
 ### TODO
-- Fix ModelMapper issue
-- Fix CORS/CSRF issues
-- Sort By Bids not working
-- Filter by category
-- Text based search
 - Test cases
+- Filter by closed/open
+- Text based search
+- Fix CORS/CSRF issues
 - Profile CSS
 - Explore my listings CSS
 - Explore my bids CSS
-- Notifications
 - Put on GitHub
