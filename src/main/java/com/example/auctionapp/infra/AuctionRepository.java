@@ -15,6 +15,8 @@ public interface AuctionRepository extends PagingAndSortingRepository<Auction, L
     @Override
     Page<Auction> findAll(Pageable pageable);
 
+    Page<Auction> findAllByItemCategoryId(final Long categoryId, final Pageable pageable);
+
     @Query(value = "SELECT auction.* FROM AUCTION auction\n" +
             "LEFT JOIN BID bid\n" +
             "ON bid.auction_id = auction.id\n" +
@@ -26,7 +28,26 @@ public interface AuctionRepository extends PagingAndSortingRepository<Auction, L
                     "LEFT  JOIN BID bid\n" +
                     "ON bid.auction_id = auction.id\n",
             nativeQuery = true)
-    Page<Auction> findAllByBidsFrequency(final String bidsFrequencyOrder, Pageable pageable);
+    Page<Auction> findAllByBidsFrequency(final String bidsFrequencyOrder, final Pageable pageable);
+
+    @Query(value = "SELECT auction.*, item.category_id FROM AUCTION auction\n" +
+            "LEFT JOIN BID bid\n" +
+            "ON bid.auction_id = auction.id\n" +
+            "INNER JOIN ITEM item\n" +
+            "ON item.auction_id = auction.id\n" +
+            "WHERE item.category_id = ?2\n" +
+            "GROUP BY auction.id\n" +
+            "ORDER BY\n" +
+            "CASE WHEN ?1 = 'asc' THEN COUNT(bid.id) END ASC,\n" +
+            "CASE WHEN ?1 = 'desc' THEN COUNT(bid.id) END DESC",
+            countQuery = "SELECT COUNT(*) FROM AUCTION auction\n" +
+                    "LEFT  JOIN BID bid\n" +
+                    "ON bid.auction_id = auction.id\n" +
+                    "INNER JOIN Item item\n" +
+                    "ON item.auction_id = auction.id\n" +
+                    "WHERE item.category_id = ?2\n",
+            nativeQuery = true)
+    Page<Auction> findAllByBidsFrequencyAndCategory(final String bidsFrequencyOrder, final Long categoryId, final Pageable pageable);
 
     @Query("SELECT auction FROM Auction auction ORDER BY auction.closingTime DESC")
     List<Auction> findAllByClosingTimeDesc();

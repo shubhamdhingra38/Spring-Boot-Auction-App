@@ -63,14 +63,15 @@ public class AuctionService {
         return auctionsList.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
-    public PaginatedAuctionsDTO findAllAuctions(int pageNumber, String sortBy, String sortOrder) {
+    public PaginatedAuctionsDTO findAllAuctions(int pageNumber, String sortBy, String sortOrder, String categoryName) {
         Page<Auction> auctions;
+        final Optional<Category> category = categoryRepository.findByName(categoryName);
         if (sortBy.equals(SortAuctionOrder.BIDS.label)) {
-            auctions = findAllAuctionsSortByBidsOrder(sortOrder, pageNumber);
+            auctions = findAllAuctionsSortByBidsOrder(sortOrder, pageNumber, category);
         } else if (sortBy.equals(SortAuctionOrder.CREATED_AT.label)) {
-            auctions = findAllAuctionsSortByCreatedAtOrder(sortOrder, pageNumber);
+            auctions = findAllAuctionsSortByCreatedAtOrder(sortOrder, pageNumber, category);
         } else {
-            auctions = findAllAuctions(pageNumber);
+            auctions = findAllAuctions(pageNumber, category);
         }
         List<AuctionDTO> auctionList = auctions.stream().map(auction -> convertToDto(auction)).toList();
 
@@ -79,26 +80,32 @@ public class AuctionService {
         return paginatedAuctionsDTO;
     }
 
-    private Page<Auction> findAllAuctions(final int pageNumber) {
-        Page<Auction> auctions = auctionRepository.findAll(PageRequest.of(pageNumber, PAGE_SIZE));
-        return auctions;
+    private Page<Auction> findAllAuctions(final int pageNumber, final Optional<Category> category) {
+        if (!category.isPresent()) {
+            return auctionRepository.findAll(PageRequest.of(pageNumber, PAGE_SIZE));
+        }
+        return auctionRepository.findAllByItemCategoryId(category.get().getId(), PageRequest.of(pageNumber, PAGE_SIZE));
     }
 
-    private Page<Auction> findAllAuctionsSortByCreatedAtOrder(final String createdAtOrder, final int pageNumber) {
+    private Page<Auction> findAllAuctionsSortByCreatedAtOrder(final String createdAtOrder, final int pageNumber, final Optional<Category> category) {
         PageRequest pageRequest;
         if (createdAtOrder.equals("desc")) {
             pageRequest = PageRequest.of(pageNumber, PAGE_SIZE, Sort.by("createdAt").descending());
         } else {
             pageRequest = PageRequest.of(pageNumber, PAGE_SIZE, Sort.by("createdAt").ascending());
         }
-        Page<Auction> auctions = auctionRepository.findAll(pageRequest);
-        return auctions;
+        if (!category.isPresent()) {
+            return auctionRepository.findAll(pageRequest);
+        }
+        return auctionRepository.findAllByItemCategoryId(category.get().getId(), pageRequest);
     }
 
-    private Page<Auction> findAllAuctionsSortByBidsOrder(final String bidsOrder, final int pageNumber) {
+    private Page<Auction> findAllAuctionsSortByBidsOrder(final String bidsOrder, final int pageNumber, final Optional<Category> category) {
         PageRequest pageRequest = PageRequest.of(pageNumber, PAGE_SIZE);
-        Page<Auction> auctions = auctionRepository.findAllByBidsFrequency(bidsOrder.toLowerCase(), pageRequest);
-        return auctions;
+        if (!category.isPresent()) {
+            return auctionRepository.findAllByBidsFrequency(bidsOrder.toLowerCase(), pageRequest);
+        }
+        return auctionRepository.findAllByBidsFrequencyAndCategory(bidsOrder.toLowerCase(), category.get().getId(), pageRequest);
     }
 
     @Transactional

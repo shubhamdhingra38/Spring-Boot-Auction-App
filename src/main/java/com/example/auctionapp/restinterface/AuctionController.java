@@ -5,10 +5,8 @@ import com.example.auctionapp.dtos.AuctionDTO;
 import com.example.auctionapp.dtos.PaginatedAuctionsDTO;
 import com.example.auctionapp.exceptions.AuctionNotFoundException;
 import com.example.auctionapp.exceptions.CategoryNotFoundException;
-import com.example.auctionapp.infra.AuctionRepository;
 import com.example.auctionapp.infra.AuctionService;
 import com.example.auctionapp.infra.UserRepository;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -24,21 +22,18 @@ import java.util.List;
 public class AuctionController {
 
     @Autowired
-    private AuctionRepository auctionRepository;
-    @Autowired
     private UserRepository userRepository;
 
     @Autowired
     private AuctionService auctionService;
 
-    @Autowired
-    private ModelMapper modelMapper;
 
     @GetMapping("/auctions")
     PaginatedAuctionsDTO getAllAuctions(@RequestParam(required = false, defaultValue = "createdAt") String sortBy,
                                         @RequestParam(required = false, defaultValue = "asc") String sortOrder,
+                                        @RequestParam(required = false, defaultValue = "") String category,
                                         @RequestParam(defaultValue = "0") int pageNumber) {
-        return auctionService.findAllAuctions(pageNumber, sortBy, sortOrder);
+        return auctionService.findAllAuctions(pageNumber, sortBy, sortOrder, category);
     }
 
     @GetMapping("/myAuctions")
@@ -68,15 +63,5 @@ public class AuctionController {
         } catch (IOException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-    }
-
-    private Auction convertToEntity(final AuctionDTO auctionDTO) {
-        final Auction auction = modelMapper.map(auctionDTO, Auction.class);
-        return auction;
-    }
-
-    private AuctionDTO convertToDto(final Auction auction) {
-        final AuctionDTO auctionDTO = modelMapper.map(auction, AuctionDTO.class);
-        return auctionDTO;
     }
 }
