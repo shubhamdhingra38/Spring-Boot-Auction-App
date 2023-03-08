@@ -53,4 +53,14 @@ public interface AuctionRepository extends PagingAndSortingRepository<Auction, L
     List<Auction> findAllByClosingTimeDesc();
 
     List<Auction> findAuctionByCreatedByUsernameOrderByCreatedAtDesc(final String userName);
+
+    @Query(value = "SELECT *\n" +
+            "FROM auction\n" +
+            "INNER JOIN item\n" +
+            "ON item.auction_id = auction.id\n" +
+            "WHERE MATCH(auction.name, auction.description)\n" +
+            "AGAINST (?1)\n" +
+            "OR MATCH(item.name, item.description)\n" +
+            "AGAINST (?1)", nativeQuery = true)
+    List<Auction> findAuctionsByTextSearch(final String text);
 }

@@ -36,6 +36,11 @@ public class AuctionController {
         return auctionService.findAllAuctions(pageNumber, sortBy, sortOrder, category);
     }
 
+    @GetMapping("/auctions/search")
+    List<AuctionDTO> searchAuctions(@RequestParam("query") String searchQuery) {
+        return auctionService.findAuctionsByTextSearch(searchQuery);
+    }
+
     @GetMapping("/myAuctions")
     List<AuctionDTO> getMyAuctions(final Principal principal) {
         final String userName = principal.getName();

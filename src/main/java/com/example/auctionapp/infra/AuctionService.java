@@ -141,6 +141,10 @@ public class AuctionService {
         return auctionRepository.findAllByClosingTimeDesc();
     }
 
+    public List<AuctionDTO> findAuctionsByTextSearch(final String text) {
+        return auctionRepository.findAuctionsByTextSearch(text).stream().map(auction -> convertToDto(auction)).collect(Collectors.toList());
+    }
+
     private Auction convertToEntity(final AuctionDTO auctionDTO) {
         final Auction auction = modelMapper.map(auctionDTO, Auction.class);
         return auction;
