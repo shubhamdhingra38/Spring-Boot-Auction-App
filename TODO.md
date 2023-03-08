@@ -8,15 +8,21 @@
 - Sort By Bids not working
 - Filter by category
 - Fix timezone
+- Profile CSS
+- Explore my listings CSS
+- Explore my bids CSS
 
 
 
 ### TODO
-- Test cases
-- Filter by closed/open
 - Text based search
+- Test cases
+  - Backend
+    - ChatMessageRepository
+    - ServiceLayer/BusinessLogic
+    - Controllers
+  - Frontend
+    - enzyme and jest or react testing library and jest
+- Filter by closed/open
 - Fix CORS/CSRF issues
-- Profile CSS
-- Explore my listings CSS
-- Explore my bids CSS
 - Put on GitHub
