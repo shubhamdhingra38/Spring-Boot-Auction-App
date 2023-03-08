@@ -5,13 +5,16 @@ import org.junit.jupiter.api.*;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
 import java.util.Optional;
 @RunWith(SpringRunner.class)
 @SpringBootTest
-class CategoryRepositoryTests {
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
+// Refer: https://stackoverflow.com/questions/34617152/how-to-re-create-database-before-each-test-in-spring
+class CategoryRepositoryTest {
 
     @Autowired
     private CategoryRepository categoryRepository;
@@ -26,6 +29,7 @@ class CategoryRepositoryTests {
         categoryRepository.save(electronicsCategory);
         categoryRepository.save(furnitureCategory);
     }
+
 
     @Test
     public void testCategoryRepository_findByName_whenCategoryFound() {
