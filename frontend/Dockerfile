@@ -4,18 +4,13 @@ FROM node:18
 ## When productionising, use nginx to serve not node
 #
 #RUN npm install -g serve
-#
-#COPY . .
-#
 #WORKDIR /app
 #
 #CMD serve
 
-ARG GITHUB_TOKEN
+COPY . .
+WORKDIR /app
 
-
-RUN git clone "https://${GITHUB_TOKEN}@github.com/shubhamdhingra38/AuctionAppFrontend.git"
-WORKDIR /AuctionAppFrontend
+# TODO: Install first
 RUN npm install
-
 CMD npm run start

@@ -16,15 +16,15 @@ services:
       - mysql
     env_file:
       - aws-creds.env
-#  frontend:
-#    container_name: auctionappfrontend
-#    build: frontend
-#    environment:
-#      - WDS_SOCKET_PORT=0
-#    ports:
-#      - "3001:3000"
-#    volumes:
-#      - ./frontend/app:/app
+  frontend:
+    container_name: auctionappfrontend
+    build: frontend
+    environment:
+      - WDS_SOCKET_PORT=0
+    ports:
+      - "3001:3000"
+    volumes:
+      - ./frontend/app:/app
   webserver:
     container_name: auctionappnginx
     build: nginx
