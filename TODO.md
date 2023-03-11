@@ -11,11 +11,15 @@
 - Profile CSS
 - Explore my listings CSS
 - Explore my bids CSS
+- Text based search
 
-
+### Maybe?
+- Filter by closed/open
 
 ### TODO
-- Text based search
+- Improve build process for development/deployment to AWS
+- Fix CORS/CSRF issues
+- Put on GitHub
 - Test cases
   - Backend
     - ChatMessageRepository
@@ -23,6 +27,3 @@
     - Controllers
   - Frontend
     - enzyme and jest or react testing library and jest
-- Filter by closed/open
-- Fix CORS/CSRF issues
-- Put on GitHub
