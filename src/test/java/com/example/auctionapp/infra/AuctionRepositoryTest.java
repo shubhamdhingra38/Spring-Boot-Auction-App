@@ -34,7 +34,6 @@ class AuctionRepositoryTest {
                              @Autowired ProfileRepository profileRepository) {
 
 
-
         final User user1 = TestUtils.createUser(userRepository);
         final User user2 = TestUtils.createUser(userRepository);
 

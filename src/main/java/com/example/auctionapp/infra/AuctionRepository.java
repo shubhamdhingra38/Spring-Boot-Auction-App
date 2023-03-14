@@ -17,33 +17,33 @@ public interface AuctionRepository extends PagingAndSortingRepository<Auction, L
 
     Page<Auction> findAllByItemCategoryId(final Long categoryId, final Pageable pageable);
 
-    @Query(value = "SELECT auction.* FROM AUCTION auction\n" +
-            "LEFT JOIN BID bid\n" +
+    @Query(value = "SELECT auction.* FROM auction\n" +
+            "LEFT JOIN bid\n" +
             "ON bid.auction_id = auction.id\n" +
             "GROUP BY auction.id\n" +
             "ORDER BY\n" +
             "CASE WHEN ?1 = 'asc' THEN COUNT(bid.id) END ASC,\n" +
             "CASE WHEN ?1 = 'desc' THEN COUNT(bid.id) END DESC",
-            countQuery = "SELECT COUNT(*) FROM AUCTION auction\n" +
-                    "LEFT  JOIN BID bid\n" +
+            countQuery = "SELECT COUNT(*) FROM auction\n" +
+                    "LEFT  JOIN bid\n" +
                     "ON bid.auction_id = auction.id\n",
             nativeQuery = true)
     Page<Auction> findAllByBidsFrequency(final String bidsFrequencyOrder, final Pageable pageable);
 
-    @Query(value = "SELECT auction.*, item.category_id FROM AUCTION auction\n" +
-            "LEFT JOIN BID bid\n" +
+    @Query(value = "SELECT auction.*, item.category_id FROM auction\n" +
+            "LEFT JOIN bid\n" +
             "ON bid.auction_id = auction.id\n" +
-            "INNER JOIN ITEM item\n" +
+            "INNER JOIN item\n" +
             "ON item.auction_id = auction.id\n" +
             "WHERE item.category_id = ?2\n" +
             "GROUP BY auction.id\n" +
             "ORDER BY\n" +
             "CASE WHEN ?1 = 'asc' THEN COUNT(bid.id) END ASC,\n" +
             "CASE WHEN ?1 = 'desc' THEN COUNT(bid.id) END DESC",
-            countQuery = "SELECT COUNT(*) FROM AUCTION auction\n" +
-                    "LEFT  JOIN BID bid\n" +
+            countQuery = "SELECT COUNT(*) FROM auction\n" +
+                    "LEFT JOIN bid\n" +
                     "ON bid.auction_id = auction.id\n" +
-                    "INNER JOIN Item item\n" +
+                    "INNER JOIN item\n" +
                     "ON item.auction_id = auction.id\n" +
                     "WHERE item.category_id = ?2\n",
             nativeQuery = true)
