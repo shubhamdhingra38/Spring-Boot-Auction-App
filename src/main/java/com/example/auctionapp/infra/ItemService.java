@@ -27,10 +27,8 @@ public class ItemService {
     private ModelMapper modelMapper;
 
     public Item saveNewItem(ItemDTO itemDto) throws CategoryNotFoundException {
-        System.out.println("Saving item:" + itemDto);
         Item item = convertToEntity(itemDto);
         item.setAuction(null);
-        System.out.println("Item: " + item);
 
         Optional<Category> category = categoryRepository.findById(itemDto.getCategory().getId());
 

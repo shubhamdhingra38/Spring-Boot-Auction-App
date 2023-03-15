@@ -1,12 +1,13 @@
 package com.example.auctionapp.dtos;
 
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Data
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ItemDTO {
     long id;
     String name;

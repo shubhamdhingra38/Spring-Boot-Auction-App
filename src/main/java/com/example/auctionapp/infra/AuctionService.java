@@ -39,19 +39,20 @@ public class AuctionService {
     private final String AUCTION_DIRECTORY = "auction";
     private static final int PAGE_SIZE = 4;
 
-    @Autowired
-    private AuctionRepository auctionRepository;
-
-    @Autowired
     private ModelMapper modelMapper;
-
-    @Autowired
-    private ItemService itemService;
-    @Autowired
+    private AuctionRepository auctionRepository;
     private CategoryRepository categoryRepository;
-
-    @Autowired
     private S3Accessor s3Accessor;
+
+    public AuctionService(final ModelMapper modelMapper,
+                          final AuctionRepository auctionRepository,
+                          final CategoryRepository categoryRepository,
+                          final S3Accessor s3Accessor) {
+        this.modelMapper = modelMapper;
+        this.auctionRepository = auctionRepository;
+        this.categoryRepository = categoryRepository;
+        this.s3Accessor = s3Accessor;
+    }
 
     public AuctionDTO findAuctionById(long auctionId) throws AuctionNotFoundException {
         Optional<Auction> auction = auctionRepository.findById(auctionId);
