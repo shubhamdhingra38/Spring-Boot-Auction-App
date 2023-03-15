@@ -22,15 +22,21 @@ import java.util.stream.Collectors;
 @Service
 public class BidService {
 
-    @Autowired
     private BidRepository bidRepository;
+    private AuctionRepository auctionRepository;
+    private UserRepository userRepository;
+    private ModelMapper modelMapper;
 
     @Autowired
-    private ModelMapper modelMapper;
-    @Autowired
-    private AuctionRepository auctionRepository;
-    @Autowired
-    private UserRepository userRepository;
+    public BidService(final BidRepository bidRepository,
+                      final AuctionRepository auctionRepository,
+                      final UserRepository userRepository,
+                      final ModelMapper modelMapper) {
+        this.bidRepository = bidRepository;
+        this.auctionRepository = auctionRepository;
+        this.userRepository = userRepository;
+        this.modelMapper = modelMapper;
+    }
 
     public List<BidDTO> findBidsForAuction(final long auctionId) {
         List<Bid> bids = bidRepository.findAllByAuctionIdOrderByAmountDesc(auctionId);
