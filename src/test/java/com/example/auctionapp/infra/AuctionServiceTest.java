@@ -3,7 +3,6 @@ package com.example.auctionapp.infra;
 import com.example.auctionapp.accessors.S3Accessor;
 import com.example.auctionapp.domain.Auction;
 import com.example.auctionapp.domain.Category;
-import com.example.auctionapp.domain.Item;
 import com.example.auctionapp.domain.User;
 import com.example.auctionapp.dtos.AuctionDTO;
 import com.example.auctionapp.dtos.CategoryDTO;
