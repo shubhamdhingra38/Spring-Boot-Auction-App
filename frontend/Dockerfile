@@ -8,9 +8,12 @@ FROM node:18
 #
 #CMD serve
 
-COPY . .
 WORKDIR /app
 
-# TODO: Install first
+COPY app/package*.json ./
+
 RUN npm install
+
+COPY . .
+
 CMD npm run start
